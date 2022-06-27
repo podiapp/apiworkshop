@@ -14,4 +14,6 @@ public class Gift : BaseEntity
     [StringLength(500)]
     public string Description { get; set; } = string.Empty;
     public int Quantity { get; set; }
+
+    public virtual ICollection<PrizeDraw>? PrizeDraws { get; set; }
 }
