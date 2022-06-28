@@ -1,4 +1,5 @@
 using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Services;
@@ -97,5 +98,20 @@ namespace ApiWorkshop.Application.Tests
             await _giftBaseRepository.Received(1).Where(Arg.Any<Guid>());
             gift.Name.Equals(response.Data?.Name);
         }
+        [Fact]
+        public void ReadGift_ShouldReadGift_WhenAllValid()
+        {
+            //Arrange
+            GiftFilter filter = new();
+            List<Gift> gifts = _fixture.Build<List<Gift>>().Create();
+
+            //Act
+            var response = _sut.Read(filter);
+            //Assert
+            //await _giftBaseRepository.Received(1).Where(Arg.Any<List<Gift>>());
+            gifts.Equals(response.Data);
+
+        }
+
     }
 }

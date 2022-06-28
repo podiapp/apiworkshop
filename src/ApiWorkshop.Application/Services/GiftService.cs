@@ -1,8 +1,10 @@
 ﻿using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Domain.Responses;
 using ApiWorkshop.Application.Domain.Utils;
+using System.Collections.Generic;
 
 namespace ApiWorkshop.Application.Services;
 
@@ -78,6 +80,52 @@ public class GiftService : IGiftService
         return new()
         {
             Data = response,
+        };
+    }
+    public BaseResponse<List<GiftResponse>> Read(GiftFilter filter)
+    {
+        var gifts = Filter(_giftBaseRepository.Where(), filter, out int count, out int totalCount).ToList();
+
+        List<GiftResponse> giftResponse = gifts.Select(g =>
+        {
+            return new GiftResponse(g.Id,
+                                    g.Name,
+                                    g.Photo,
+                                    g.Description,
+                                    g.Quantity,
+                                    g.Status);
+
+        }).ToList();
+
+        return new() { Data = giftResponse, Count = count, TotalCount = totalCount};
+    }
+    private static IQueryable<Gift> Filter(IQueryable<Gift> entities, GiftFilter filter, out int count, out int totalCount)
+    {
+        if (filter.Search != null)
+            entities = entities.Where(p => p.Name != null && p.Name.ToLower().Contains(filter.Search!.ToLower().Trim()));
+
+        totalCount = entities.Count();
+
+        entities = GetOrder(entities, filter.Order, filter.Desc);
+
+        if (filter.Skip != null)
+            entities = entities.Skip(filter.Skip.Value);
+        if (filter.Take != null)
+            entities = entities.Take(filter.Take.Value);
+
+        count = entities.Count();
+
+        return entities;
+    }
+
+    private static IQueryable<Gift> GetOrder(IQueryable<Gift> entities, string order, bool desc)
+    {
+        return order switch
+        {
+            "name" => (!desc ? entities.OrderBy(p => p.Name) : entities.OrderByDescending(p => p.Name)),
+            "status" => (!desc ? entities.OrderBy(p => p.Status) : entities.OrderByDescending(p => p.Status)),
+            "date" => (!desc ? entities.OrderBy(p => p.CreatedAt) : entities.OrderByDescending(p => p.CreatedAt)),
+            _ => entities.OrderByDescending(p => p.CreatedAt),
         };
     }
 }
