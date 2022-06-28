@@ -39,13 +39,13 @@ public class PrizeDrawService : IPrizeDrawService
         {
             _prizeDrawRepository.Insert(prize);
             await _prizeDrawRepository.SaveChangesAsync();
+            prize = await _prizeDrawRepository.Where(prize.Id);
         }
         else
         {
+            prize.Id = Guid.NewGuid();
             prize.Gift = fakeGift;
         }
-
-        prize = await _prizeDrawRepository.Where(prize.Id);
 
         return new(new(prize));
     }
