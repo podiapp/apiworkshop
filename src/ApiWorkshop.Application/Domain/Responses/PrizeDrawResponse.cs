@@ -15,6 +15,14 @@ public class PrizeDrawResponse
         CreatedAt = createdAt;
     }
 
+    public PrizeDrawResponse(PrizeDraw prize)
+    {
+        Id = prize.Id;
+        Name = prize.Name;
+        Gift = prize.Gift?.Name ?? "";
+        CreatedAt = prize.CreatedAt;
+    }
+
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Gift { get; set; }

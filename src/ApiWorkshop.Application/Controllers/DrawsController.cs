@@ -23,8 +23,8 @@ public class DrawsController : ControllerBase
         => _prizeDrawService.Get(filter);
 
     [HttpPost("{name}")]
-    [ProducesResponseType(typeof(BaseResponse<PrizeDraw>), StatusCodes.Status200OK)]
-    public async Task<BaseResponse<PrizeDraw>> Draw(string name)
+    [ProducesResponseType(typeof(BaseResponse<PrizeDrawResponse>), StatusCodes.Status200OK)]
+    public async Task<BaseResponse<PrizeDrawResponse>> Draw(string name)
         => await _prizeDrawService.Draw(name);
 
     [HttpDelete("reset")]

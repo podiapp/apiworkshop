@@ -7,7 +7,7 @@ namespace ApiWorkshop.Application.Domain.Interfaces;
 
 public interface IPrizeDrawService
 {
-    Task<BaseResponse<PrizeDraw>> Draw(string name);
+    Task<BaseResponse<PrizeDrawResponse>> Draw(string name);
     BaseResponse<List<PrizeDrawResponse>> Get(PrizeDrawFilter filter);
     Task Reset();
 }
