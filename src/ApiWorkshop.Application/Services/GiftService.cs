@@ -40,6 +40,7 @@ public class GiftService : IGiftService
         if (gift == null)
             throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "Brinde não encontrado.");
 
+        gift.Name = giftRequest.Name;
         gift.Description = giftRequest.Description;
         gift.Photo = giftRequest.Photo;
         gift.Quantity = giftRequest.Quantity;
