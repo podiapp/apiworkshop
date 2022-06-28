@@ -34,8 +34,16 @@ public class PrizeDrawService : IPrizeDrawService
             Status = Domain.Enums.Status.ACTIVE,
         };
 
-        _prizeDrawRepository.Insert(prize);
-        await _prizeDrawRepository.SaveChangesAsync();
+        Gift fakeGift = Gift.GetFakeGift();
+        if (fakeGift.Id != giftId)
+        {
+            _prizeDrawRepository.Insert(prize);
+            await _prizeDrawRepository.SaveChangesAsync();
+        }
+        else
+        {
+            prize.Gift = fakeGift;
+        }
 
         prize = await _prizeDrawRepository.Where(prize.Id);
 
@@ -56,6 +64,7 @@ public class PrizeDrawService : IPrizeDrawService
 
     private static Guid? GetPrizeGift(List<Gift> gifts)
     {
+        gifts.Add(Gift.GetFakeGift());
         List<Gift>? list = new();
         foreach (Gift gift in gifts)
         {
