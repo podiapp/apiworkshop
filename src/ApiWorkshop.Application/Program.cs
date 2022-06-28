@@ -1,5 +1,11 @@
 using ApiWorkshop.Application.Data.Context;
+using ApiWorkshop.Application.Data.Repositories;
+using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Extensions;
+using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Utils;
+using ApiWorkshop.Application.Middlewares;
+using ApiWorkshop.Application.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -12,13 +18,23 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 
 builder.Services.AddCors();
+
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+
+builder.Services
+    .AddScoped<IBaseRepository<PrizeDraw>, BaseRepository<PrizeDraw>>()
+    .AddScoped<IBaseRepository<Gift>, BaseRepository<Gift>>()
+    .AddScoped<IPrizeDrawService, PrizeDrawService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddHealthChecks();
 
+string connectionString =
+    connectionString = Environment.GetEnvironmentVariable("CONTEXT") ?? builder.Configuration.GetConnectionString("ApiContext");
+
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ApiContext"),
+    options.UseNpgsql(connectionString,
     b => b.MigrationsHistoryTable("__EFMigrationsHistory", "workshop")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -32,9 +48,11 @@ app.UseExceptionHandler(a => a.Run(async context =>
     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
     var exception = exceptionHandlerPathFeature?.Error;
 
-    var result = new DefaultResponse<dynamic>
+    var result = new BaseErrorResponse()
     {
-        Message = exception?.Message ?? ""
+        Errors = new List<string>() {
+            exception?.Message ?? ""
+    }
     };
 
     context.Response.ContentType = "application/json";
@@ -45,8 +63,6 @@ app.UseExceptionHandler(a => a.Run(async context =>
         code = (int)httpException.Status;
     }
 
-    result.StatusCode = code;
-    result.Success = false;
     context.Response.StatusCode = code;
 
     if (code != 204)
@@ -61,6 +77,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRequestMigrations();
 
 app.UseHealthChecks("/api/status");
 app.UseAuthorization();

@@ -2,16 +2,26 @@
 
 namespace ApiWorkshop.Application.Domain.Utils;
 
-public class DefaultResponse<T>
+
+public class BaseResponse<T>
 {
-    [JsonPropertyName("statusCode")]
-    public int StatusCode { get; set; } = 200;
+    public BaseResponse()
+    {
+    }
+
+    public BaseResponse(T? data)
+    {
+        Data = data;
+    }
+
+    public BaseResponse(T? data, int? count, int? totalCount)
+    {
+        Data = data;
+        Count = count;
+        TotalCount = totalCount;
+    }
     [JsonPropertyName("data")]
     public T? Data { get; set; }
-    [JsonPropertyName("message")]
-    public string Message { get; set; } = string.Empty;
-    [JsonPropertyName("success")]
-    public bool Success { get; set; } = true;
     [JsonPropertyName("count")]
     public int? Count { get; set; } = 0;
     [JsonPropertyName("totalCount")]
