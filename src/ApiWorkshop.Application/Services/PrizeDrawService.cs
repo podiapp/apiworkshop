@@ -19,7 +19,7 @@ public class PrizeDrawService : IPrizeDrawService
         _giftRepository = giftRepository;
     }
 
-    public async Task<BaseResponse<PrizeDraw>> Draw(string name)
+    public async Task<BaseResponse<PrizeDrawResponse>> Draw(string name)
     {
         var gifts = _giftRepository.Where(g => g.Status == Domain.Enums.Status.ACTIVE && (g.PrizeDraws == null || g.Quantity - g.PrizeDraws.Count(pd => pd.GiftId == g.Id) > 0))
             .ToList();
@@ -34,10 +34,20 @@ public class PrizeDrawService : IPrizeDrawService
             Status = Domain.Enums.Status.ACTIVE,
         };
 
-        _prizeDrawRepository.Insert(prize);
-        await _prizeDrawRepository.SaveChangesAsync();
+        Gift fakeGift = Gift.GetFakeGift();
+        if (fakeGift.Id != giftId)
+        {
+            _prizeDrawRepository.Insert(prize);
+            await _prizeDrawRepository.SaveChangesAsync();
+            prize = await _prizeDrawRepository.Where(prize.Id);
+        }
+        else
+        {
+            prize.Id = Guid.NewGuid();
+            prize.Gift = fakeGift;
+        }
 
-        return new(prize);
+        return new(new(prize));
     }
 
     public BaseResponse<List<PrizeDrawResponse>> Get(PrizeDrawFilter filter)
@@ -46,8 +56,15 @@ public class PrizeDrawService : IPrizeDrawService
         return new(PrizeDrawResponse.GetResponseFromList(prizes), count, totalCount);
     }
 
+    public async Task Reset()
+    {
+        _prizeDrawRepository.DeleteRange(_prizeDrawRepository.Where().ToList());
+        await _prizeDrawRepository.SaveChangesAsync();
+    }
+
     private static Guid? GetPrizeGift(List<Gift> gifts)
     {
+        gifts.Add(Gift.GetFakeGift());
         List<Gift>? list = new();
         foreach (Gift gift in gifts)
         {

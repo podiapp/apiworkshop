@@ -16,4 +16,15 @@ public class Gift : BaseEntity
     public int Quantity { get; set; }
 
     public virtual ICollection<PrizeDraw>? PrizeDraws { get; set; }
+
+    public static Gift GetFakeGift()
+        => new()
+        {
+            Id = Guid.Parse("7012727f-4032-407c-96f3-65ba5e662d1b"),
+            Name = "Não foi desta vez!",
+            Description = "Não foi desta vez!",
+            Quantity = 3,
+            Photo = "",
+            Status = Enums.Status.ACTIVE,
+        };
 }

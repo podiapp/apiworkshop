@@ -7,6 +7,7 @@ public interface IBaseRepository<TEntity> where TEntity : BaseEntity
     int Count(Func<TEntity, bool> query);
     Task Delete(Guid id);
     void Delete(Func<TEntity, bool> query);
+    void DeleteRange(List<TEntity> list);
     Task Inactive(Guid id);
     void Insert(TEntity obj);
     Task SaveChangesAsync();
