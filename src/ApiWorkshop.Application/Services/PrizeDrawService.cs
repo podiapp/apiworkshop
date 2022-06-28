@@ -46,6 +46,12 @@ public class PrizeDrawService : IPrizeDrawService
         return new(PrizeDrawResponse.GetResponseFromList(prizes), count, totalCount);
     }
 
+    public async Task Reset()
+    {
+        _prizeDrawRepository.DeleteRange(_prizeDrawRepository.Where().ToList());
+        await _prizeDrawRepository.SaveChangesAsync();
+    }
+
     private static Guid? GetPrizeGift(List<Gift> gifts)
     {
         List<Gift>? list = new();

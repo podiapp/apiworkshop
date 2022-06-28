@@ -26,4 +26,12 @@ public class DrawsController : ControllerBase
     [ProducesResponseType(typeof(BaseResponse<PrizeDraw>), StatusCodes.Status200OK)]
     public async Task<BaseResponse<PrizeDraw>> Draw(string name)
         => await _prizeDrawService.Draw(name);
+
+    [HttpDelete("reset")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Reset()
+    {
+        await _prizeDrawService.Reset();
+        return Ok();
+    }
 }

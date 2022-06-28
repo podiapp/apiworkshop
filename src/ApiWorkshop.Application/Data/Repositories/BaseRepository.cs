@@ -16,6 +16,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
     public async Task Delete(Guid id) => _context.Set<TEntity>().Remove(await Where(id));
     public void Delete(Func<TEntity, bool> query) => Where(query).ToList().ForEach(entity => _context.Set<TEntity>().Remove(entity));
+    public void DeleteRange(List<TEntity> list) => _context.Set<TEntity>().RemoveRange(list);
 
     public async Task Inactive(Guid id)
     {

@@ -9,4 +9,5 @@ public interface IPrizeDrawService
 {
     Task<BaseResponse<PrizeDraw>> Draw(string name);
     BaseResponse<List<PrizeDrawResponse>> Get(PrizeDrawFilter filter);
+    Task Reset();
 }
