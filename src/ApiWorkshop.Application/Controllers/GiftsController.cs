@@ -1,4 +1,5 @@
 ﻿using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Domain.Responses;
@@ -18,17 +19,24 @@ namespace ApiWorkshop.Application.Controllers
             _repo = repo;
         }
 
+        [HttpGet("")]
+        public ActionResult<BaseResponse<List<GiftResponse>>> Get([FromQuery] GiftFilter filter) => _repo.Read(filter);
+
         [HttpGet("{id}")]
-        public async Task<BaseResponse<GiftResponse>> Get(Guid id) => await _repo.ReadById(id);
+        public async Task<ActionResult<BaseResponse<GiftResponse>>> GetById(Guid id) => await _repo.ReadById(id);
 
         [HttpPost("")]
-        public async Task<Gift> Post(GiftRequest giftRequest) => await _repo.Create(giftRequest);
+        public async Task<ActionResult<BaseResponse<Gift>>> Post(GiftRequest giftRequest) => await _repo.Create(giftRequest);
 
         [HttpPut("{id}")]
-        public async Task<Gift> Put(Guid id, GiftRequest giftRequest) => await _repo.Update(id, giftRequest);
+        public async Task<ActionResult<BaseResponse<Gift>>> Put(Guid id, GiftRequest giftRequest) => await _repo.Update(id, giftRequest);
 
         [HttpDelete("{id}")]
-        public async Task<Gift> Delete(Guid id, GiftRequest giftRequest) => await _repo.Delete(id, giftRequest);
+        public async Task<IActionResult> Delete(Guid id, GiftRequest giftRequest)
+        {
+            await _repo.Delete(id, giftRequest);
+            return Ok();
+        }
     }
 
 

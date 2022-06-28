@@ -1,4 +1,5 @@
 using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Services;
@@ -29,7 +30,7 @@ namespace ApiWorkshop.Application.Tests
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
             _giftBaseRepository.Received(1).Insert(Arg.Any<Gift>());
-            giftRequest.Name.Equals(response.Name);
+            giftRequest.Name.Equals(response.Data?.Name);
         }
         [Fact]
         public async Task UpdateGift_ShouldUpdateGift_WhenAllValid()
@@ -51,7 +52,7 @@ namespace ApiWorkshop.Application.Tests
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
             _giftBaseRepository.Received(1).Update(Arg.Any<Gift>());
-            giftRequest.Name.Equals(response.Name);
+            giftRequest.Name.Equals(response.Data?.Name);
         }
 
         [Fact]
@@ -69,7 +70,7 @@ namespace ApiWorkshop.Application.Tests
             _giftBaseRepository.Where(id).Returns(gift);
 
             // Act
-            var response = await _sut.Delete(id, giftRequest);
+            await _sut.Delete(id, giftRequest);
 
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
@@ -97,5 +98,21 @@ namespace ApiWorkshop.Application.Tests
             await _giftBaseRepository.Received(1).Where(Arg.Any<Guid>());
             gift.Name.Equals(response.Data?.Name);
         }
+        [Fact]
+        public void ReadGift_ShouldReadGift_WhenAllValid()
+        {
+            //Arrange
+            GiftFilter filter = new();
+            List<Gift> gifts = _fixture.Build<List<Gift>>().Create();
+
+            //Act
+            var response = _sut.Read(filter);
+
+            //Assert
+            //await _giftBaseRepository.Received(1).Where(Arg.Any<List<Gift>>());
+            gifts.Equals(response.Data);
+
+        }
+
     }
 }
