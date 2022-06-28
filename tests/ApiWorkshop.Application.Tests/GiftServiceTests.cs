@@ -30,7 +30,7 @@ namespace ApiWorkshop.Application.Tests
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
             _giftBaseRepository.Received(1).Insert(Arg.Any<Gift>());
-            giftRequest.Name.Equals(response.Name);
+            giftRequest.Name.Equals(response.Data?.Name);
         }
         [Fact]
         public async Task UpdateGift_ShouldUpdateGift_WhenAllValid()
@@ -52,7 +52,7 @@ namespace ApiWorkshop.Application.Tests
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
             _giftBaseRepository.Received(1).Update(Arg.Any<Gift>());
-            giftRequest.Name.Equals(response.Name);
+            giftRequest.Name.Equals(response.Data?.Name);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace ApiWorkshop.Application.Tests
             _giftBaseRepository.Where(id).Returns(gift);
 
             // Act
-            var response = await _sut.Delete(id, giftRequest);
+            await _sut.Delete(id, giftRequest);
 
             // Assert
             await _giftBaseRepository.Received(1).SaveChangesAsync();
@@ -107,6 +107,7 @@ namespace ApiWorkshop.Application.Tests
 
             //Act
             var response = _sut.Read(filter);
+
             //Assert
             //await _giftBaseRepository.Received(1).Where(Arg.Any<List<Gift>>());
             gifts.Equals(response.Data);

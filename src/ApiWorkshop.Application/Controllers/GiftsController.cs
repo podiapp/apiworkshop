@@ -26,13 +26,17 @@ namespace ApiWorkshop.Application.Controllers
         public async Task<ActionResult<BaseResponse<GiftResponse>>> GetById(Guid id) => await _repo.ReadById(id);
 
         [HttpPost("")]
-        public async Task<ActionResult<Gift>> Post(GiftRequest giftRequest) => await _repo.Create(giftRequest);
+        public async Task<ActionResult<BaseResponse<Gift>>> Post(GiftRequest giftRequest) => await _repo.Create(giftRequest);
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Gift>> Put(Guid id, GiftRequest giftRequest) => await _repo.Update(id, giftRequest);
+        public async Task<ActionResult<BaseResponse<Gift>>> Put(Guid id, GiftRequest giftRequest) => await _repo.Update(id, giftRequest);
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Gift>> Delete(Guid id, GiftRequest giftRequest) => await _repo.Delete(id, giftRequest);
+        public async Task<IActionResult> Delete(Guid id, GiftRequest giftRequest)
+        {
+            await _repo.Delete(id, giftRequest);
+            return Ok();
+        }
     }
 
 

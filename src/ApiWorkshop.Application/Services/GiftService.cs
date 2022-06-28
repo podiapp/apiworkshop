@@ -17,7 +17,7 @@ public class GiftService : IGiftService
         _giftBaseRepository = giftBaseRepository;
     }
 
-    public async Task<Gift> Create(GiftRequest giftRequest)
+    public async Task<BaseResponse<Gift>> Create(GiftRequest giftRequest)
     {
         Gift gift = new()
         {
@@ -31,10 +31,10 @@ public class GiftService : IGiftService
         _giftBaseRepository.Insert(gift);
         await _giftBaseRepository.SaveChangesAsync();
 
-        return gift;
+        return new(gift);
     }
 
-    public async Task<Gift> Update(Guid id, GiftRequest giftRequest)
+    public async Task<BaseResponse<Gift>> Update(Guid id, GiftRequest giftRequest)
     {
         var gift = await _giftBaseRepository.Where(id);
         if (gift == null)
@@ -48,10 +48,10 @@ public class GiftService : IGiftService
         _giftBaseRepository.Update(gift);
         await _giftBaseRepository.SaveChangesAsync();
 
-        return gift;
+        return new(gift);
     }
 
-    public async Task<Gift> Delete(Guid id, GiftRequest giftRequest)
+    public async Task Delete(Guid id, GiftRequest giftRequest)
     {
         var gift = await _giftBaseRepository.Where(id);
         if (gift == null)
@@ -60,8 +60,6 @@ public class GiftService : IGiftService
         gift.UpdatedAt = DateTime.Now;
         await _giftBaseRepository.Delete(id);
         await _giftBaseRepository.SaveChangesAsync();
-
-        return gift;
     }
 
     public async Task<BaseResponse<GiftResponse>> ReadById(Guid id)
