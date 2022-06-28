@@ -84,6 +84,9 @@ public class GiftService : IGiftService
     {
         var gifts = Filter(_giftBaseRepository.Where(), filter, out int count, out int totalCount).ToList();
 
+        if (filter.HasFakeGift.HasValue && filter.HasFakeGift.Value)
+            gifts.Add(Gift.GetFakeGift());
+
         List<GiftResponse> giftResponse = gifts.Select(g =>
         {
             return new GiftResponse(g.Id,
@@ -95,12 +98,15 @@ public class GiftService : IGiftService
 
         }).ToList();
 
-        return new() { Data = giftResponse, Count = count, TotalCount = totalCount};
+        return new() { Data = giftResponse, Count = count, TotalCount = totalCount };
     }
     private static IQueryable<Gift> Filter(IQueryable<Gift> entities, GiftFilter filter, out int count, out int totalCount)
     {
         if (filter.Search != null)
             entities = entities.Where(p => p.Name != null && p.Name.ToLower().Contains(filter.Search!.ToLower().Trim()));
+
+        if (filter.Status != null)
+            entities = entities.Where(p => p.Status == filter.Status);
 
         totalCount = entities.Count();
 
