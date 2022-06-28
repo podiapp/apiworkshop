@@ -1,4 +1,5 @@
 ﻿using ApiWorkshop.Application.Domain.Entities;
+using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Services;
 
@@ -37,7 +38,31 @@ public class PrizeDrawServiceTests
         // Assert
         await _prizeDrawRepository.Received(1).SaveChangesAsync();
         _giftRepository.Received(1).Where(Arg.Any<Func<Gift, bool>>());
-        response.Name.Should().Be(name);
-        response.GiftId.Should().NotBeEmpty();
+        response.Data!.Name.Should().Be(name);
+        response.Data!.GiftId.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void GetDraw_ShouldGetListDrawGift_WhenParametersAreAllValid()
+    {
+        // Arrange
+        PrizeDrawFilter filter = new();
+        List<Gift> gifts = Enumerable.Range(0, 10)
+            .Select(x => _fixture.Build<Gift>().Without(x => x.PrizeDraws).Create())
+            .ToList();
+
+        IQueryable<PrizeDraw> prizes = Enumerable.Range(0, 10)
+            .Select(i => _fixture.Build<PrizeDraw>().With(x => x.Gift, gifts.ElementAt(i)).Create())
+            .AsQueryable();
+
+        _prizeDrawRepository.Where().Returns(prizes);
+
+        // Act
+        var response = _sut.Get(filter);
+
+        // Assert
+        _prizeDrawRepository.Received(1).Where();
+        response.Data.Should().NotBeNullOrEmpty();
+        prizes.Count().Should().Be(response.Data!.Count);
     }
 }
