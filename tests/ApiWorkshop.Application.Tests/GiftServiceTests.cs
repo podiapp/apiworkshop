@@ -1,7 +1,6 @@
 using ApiWorkshop.Application.Domain.Entities;
 using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
-using ApiWorkshop.Application.Domain.Responses;
 using ApiWorkshop.Application.Services;
 
 namespace ApiWorkshop.Application.Tests
@@ -38,7 +37,12 @@ namespace ApiWorkshop.Application.Tests
             // Arrange
             GiftRequest giftRequest = _fixture.Build<GiftRequest>().Create();
             Guid id = Guid.NewGuid();
-            var gift = _fixture.Build<Gift>().With(g => g.Id, id).Create();
+            var gift = _fixture
+                .Build<Gift>()
+                .With(g => g.Id, id)
+                .Without(x => x.PrizeDraws)
+                .Create();
+
             _giftBaseRepository.Where(id).Returns(gift);
 
             // Act
@@ -56,7 +60,12 @@ namespace ApiWorkshop.Application.Tests
             // Arrange
             GiftRequest giftRequest = _fixture.Build<GiftRequest>().Create();
             Guid id = Guid.NewGuid();
-            var gift = _fixture.Build<Gift>().With(g => g.Id, id).Create();
+            var gift = _fixture
+                .Build<Gift>()
+                .With(g => g.Id, id)
+                .Without(x => x.PrizeDraws)
+                .Create();
+
             _giftBaseRepository.Where(id).Returns(gift);
 
             // Act
@@ -72,7 +81,12 @@ namespace ApiWorkshop.Application.Tests
         {
             // Arrange
             Guid id = Guid.NewGuid();
-            var gift = _fixture.Build<Gift>().With(g => g.Id, id).Create();
+            var gift = _fixture
+                .Build<Gift>()
+                .With(g => g.Id, id)
+                .Without(x => x.PrizeDraws)
+                .Create();
+
             _giftBaseRepository.Where(id).Returns(gift);
 
             // Act
