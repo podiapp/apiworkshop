@@ -62,7 +62,7 @@ public class GiftService : IGiftService
         return gift;
     }
 
-    public async Task<DefaultResponse<GiftResponse>> ReadById(Guid id)
+    public async Task<BaseResponse<GiftResponse>> ReadById(Guid id)
     {
         var gift = await _giftBaseRepository.Where(id);
         if (gift == null)

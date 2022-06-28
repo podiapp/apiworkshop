@@ -19,7 +19,7 @@ namespace ApiWorkshop.Application.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<DefaultResponse<GiftResponse>> Get(Guid id) => await _repo.ReadById(id);
+        public async Task<BaseResponse<GiftResponse>> Get(Guid id) => await _repo.ReadById(id);
 
         [HttpPost("")]
         public async Task<Gift> Post(GiftRequest giftRequest) => await _repo.Create(giftRequest);
