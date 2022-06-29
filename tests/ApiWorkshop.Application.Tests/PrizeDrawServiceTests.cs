@@ -65,8 +65,8 @@ public class PrizeDrawServiceTests
 
         // Assert
         _prizeDrawRepository.Received(1).Where();
-        response.Data.Should().NotBeNullOrEmpty();
-        prizes.Count().Should().Be(response.Data!.Count);
+        response.Data!.Data.Should().NotBeNullOrEmpty();
+        prizes.Count().Should().Be(response.Data!.Data!.Count);
     }
 
     [Fact]

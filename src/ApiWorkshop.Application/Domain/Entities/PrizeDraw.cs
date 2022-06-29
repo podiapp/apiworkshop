@@ -5,8 +5,7 @@ namespace ApiWorkshop.Application.Domain.Entities;
 
 public class PrizeDraw : BaseEntity
 {
-    [Required]
-    public Guid GiftId { get; set; }
+    public Guid? GiftId { get; set; }
     [Required]
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;

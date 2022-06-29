@@ -18,13 +18,13 @@ public class DrawsController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(BaseResponse<List<PrizeDrawResponse>?>), StatusCodes.Status200OK)]
-    public ActionResult<BaseResponse<List<PrizeDrawResponse>>> Get([FromQuery] PrizeDrawFilter filter)
+    [ProducesResponseType(typeof(BaseResponse<PrizeDrawResponse?>), StatusCodes.Status200OK)]
+    public ActionResult<BaseResponse<PrizeDrawResponse>> Get([FromQuery] PrizeDrawFilter filter)
         => _prizeDrawService.Get(filter);
 
     [HttpPost("{name}")]
-    [ProducesResponseType(typeof(BaseResponse<PrizeDrawResponse>), StatusCodes.Status200OK)]
-    public async Task<BaseResponse<PrizeDrawResponse>> Draw(string name)
+    [ProducesResponseType(typeof(BaseResponse<PrizeDrawDataResponse>), StatusCodes.Status200OK)]
+    public async Task<BaseResponse<PrizeDrawDataResponse>> Draw(string name)
         => await _prizeDrawService.Draw(name);
 
     [HttpDelete("reset")]

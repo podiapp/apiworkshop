@@ -19,7 +19,7 @@ public class PrizeDrawService : IPrizeDrawService
         _giftRepository = giftRepository;
     }
 
-    public async Task<BaseResponse<PrizeDrawResponse>> Draw(string name)
+    public async Task<BaseResponse<PrizeDrawDataResponse>> Draw(string name)
     {
         var gifts = _giftRepository.Where(g => g.Status == Domain.Enums.Status.ACTIVE && (g.PrizeDraws == null || g.Quantity - g.PrizeDraws.Count(pd => pd.GiftId == g.Id) > 0))
             .ToList();
@@ -27,33 +27,26 @@ public class PrizeDrawService : IPrizeDrawService
         Guid giftId = GetPrizeGift(gifts) ??
             throw new HttpStatusException(System.Net.HttpStatusCode.InternalServerError, "Erro ao gerar prêmio.");
 
+        Gift fakeGift = Gift.GetFakeGift();
+
         var prize = new PrizeDraw()
         {
             Name = name,
-            GiftId = giftId,
+            GiftId = (fakeGift.Id != giftId) ? giftId : null,
             Status = Domain.Enums.Status.ACTIVE,
         };
 
-        Gift fakeGift = Gift.GetFakeGift();
-        if (fakeGift.Id != giftId)
-        {
-            _prizeDrawRepository.Insert(prize);
-            await _prizeDrawRepository.SaveChangesAsync();
-            prize = await _prizeDrawRepository.Where(prize.Id);
-        }
-        else
-        {
-            prize.Id = Guid.NewGuid();
-            prize.Gift = fakeGift;
-        }
+        _prizeDrawRepository.Insert(prize);
+        await _prizeDrawRepository.SaveChangesAsync();
+        prize = await _prizeDrawRepository.Where(prize.Id);
 
         return new(new(prize));
     }
 
-    public BaseResponse<List<PrizeDrawResponse>> Get(PrizeDrawFilter filter)
+    public BaseResponse<PrizeDrawResponse> Get(PrizeDrawFilter filter)
     {
         var prizes = Filter(_prizeDrawRepository.Where().Include(p => p.Gift), filter, out int count, out int totalCount).ToList();
-        return new(PrizeDrawResponse.GetResponseFromList(prizes), count, totalCount);
+        return new(new PrizeDrawResponse(prizes), count, totalCount);
     }
 
     public async Task Reset()
