@@ -5,7 +5,30 @@ namespace ApiWorkshop.Application.Domain.Responses;
 
 public class GiftResponse
 {
-    public GiftResponse(Guid id, string name, string photo, string description, int quantity, Status status)
+    public GiftResponse(Guid id,
+                        string name,
+                        string photo,
+                        string description,
+                        int quantity,
+                        int availableQuantity,
+                        int winnersQuantity,
+                        Status status)
+    {
+        Id = id;
+        Name = name;
+        Photo = photo;
+        Description = description;
+        Quantity = quantity;
+        AvailableQuantity = availableQuantity;
+        WinnersQuantity = winnersQuantity;
+        Status = status;
+    }
+    public GiftResponse(Guid id,
+                        string name,
+                        string photo,
+                        string description,
+                        int quantity,
+                        Status status)
     {
         Id = id;
         Name = name;
@@ -16,12 +39,11 @@ public class GiftResponse
     }
 
     public Guid Id { get; set; }
-    [StringLength(100)]
     public string Name { get; set; } = string.Empty;
-    [StringLength(300)]
     public string Photo { get; set; } = string.Empty;
-    [StringLength(500)]
     public string Description { get; set; } = string.Empty;
     public int Quantity { get; set; }
+    public int AvailableQuantity { get; }
+    public int WinnersQuantity { get; }
     public Status Status { get; set; }
 }

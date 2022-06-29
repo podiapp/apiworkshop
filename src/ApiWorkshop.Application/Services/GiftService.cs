@@ -4,6 +4,7 @@ using ApiWorkshop.Application.Domain.Interfaces;
 using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Domain.Responses;
 using ApiWorkshop.Application.Domain.Utils;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace ApiWorkshop.Application.Services;
@@ -83,7 +84,7 @@ public class GiftService : IGiftService
     }
     public BaseResponse<List<GiftResponse>> Read(GiftFilter filter)
     {
-        var gifts = Filter(_giftBaseRepository.Where(), filter, out int count, out int totalCount).ToList();
+        var gifts = Filter(_giftBaseRepository.Where().Include(g => g.PrizeDraws), filter, out int count, out int totalCount).ToList();
 
         if (filter.HasFakeGift.HasValue && filter.HasFakeGift.Value)
             gifts.Add(Gift.GetFakeGift());
@@ -95,6 +96,8 @@ public class GiftService : IGiftService
                                     g.Photo,
                                     g.Description,
                                     g.Quantity,
+                                    g.Quantity - (g.PrizeDraws?.Count ?? 0),
+                                    g.PrizeDraws?.Count ?? 0,
                                     g.Status);
 
         }).ToList();
