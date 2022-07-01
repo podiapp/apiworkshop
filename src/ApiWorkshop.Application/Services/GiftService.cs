@@ -72,8 +72,8 @@ public class GiftService : IGiftService
 
         GiftResponse response = new(gift.Id,
             gift.Name,
-            gift.Description,
             gift.Photo,
+            gift.Description,
             gift.Quantity,
             gift.Status);
 
