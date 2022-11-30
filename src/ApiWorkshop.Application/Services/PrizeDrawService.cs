@@ -19,7 +19,7 @@ public class PrizeDrawService : IPrizeDrawService
         _giftRepository = giftRepository;
     }
 
-    public async Task<BaseResponse<DrawResponse>> Draw(string name)
+    public async Task<BaseResponse<PrizeDrawsResponse>> Draw(string name)
     {
         var gifts = _giftRepository.Where(g => g.Status == Domain.Enums.Status.ACTIVE && (g.PrizeDraws == null || g.Quantity - g.PrizeDraws.Count(pd => pd.GiftId == g.Id) > 0))
             .ToList();
@@ -40,7 +40,7 @@ public class PrizeDrawService : IPrizeDrawService
         await _prizeDrawRepository.SaveChangesAsync();
         prize = await _prizeDrawRepository.Where(prize.Id);
 
-        return new(new DrawResponse(prize.Id,
+        return new(new PrizeDrawsResponse(prize.Id,
                                     prize.Name,
                                     prize.Gift?.Name ?? "",
                                     prize.GiftId,

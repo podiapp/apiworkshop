@@ -1,8 +1,10 @@
 ﻿using ApiWorkshop.Application.Domain.Entities;
 using ApiWorkshop.Application.Domain.Filters;
 using ApiWorkshop.Application.Domain.Interfaces;
+using ApiWorkshop.Application.Domain.Requests;
 using ApiWorkshop.Application.Domain.Responses;
 using ApiWorkshop.Application.Domain.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiWorkshop.Application.Controllers;
@@ -11,27 +13,33 @@ namespace ApiWorkshop.Application.Controllers;
 [ApiController]
 public class DrawsController : ControllerBase
 {
-    private readonly IPrizeDrawService _prizeDrawService;
-    public DrawsController(IPrizeDrawService prizeDrawService)
+    private readonly IDrawService _repo;
+
+    public DrawsController(IDrawService repo)
     {
-        _prizeDrawService = prizeDrawService;
+        _repo = repo;
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(BaseResponse<PrizeDrawResponse?>), StatusCodes.Status200OK)]
-    public ActionResult<BaseResponse<PrizeDrawResponse>> Get([FromQuery] PrizeDrawFilter filter)
-        => _prizeDrawService.Get(filter);
+    [Route("")]
+    public ActionResult<BaseResponse<List<DrawResponse>>> Get([FromQuery] DrawFilter filter)
+        => _repo.Read(filter);
 
-    [HttpPost("{name}")]
-    [ProducesResponseType(typeof(BaseResponse<DrawResponse>), StatusCodes.Status200OK)]
-    public async Task<BaseResponse<DrawResponse>> Draw(string name)
-        => await _prizeDrawService.Draw(name);
+    [HttpPost]
+    [Route("")]
+    public async Task<Draw> Post(DrawRequest request)
+        => await _repo.Create(request);
 
-    [HttpDelete("reset")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Reset()
+    [HttpPut]
+    [Route("{id}")]
+    public async Task<Draw> Put(Guid id, DrawRequest request)
+        => await _repo.Update(id, request);
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        await _prizeDrawService.Reset();
+        await _repo.Delete(id);
         return Ok();
     }
 }

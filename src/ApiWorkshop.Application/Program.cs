@@ -26,7 +26,9 @@ builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 builder.Services
     .AddScoped<IBaseRepository<PrizeDraw>, BaseRepository<PrizeDraw>>()
     .AddScoped<IBaseRepository<Gift>, BaseRepository<Gift>>()
+    .AddScoped<IBaseRepository<Draw>, BaseRepository<Draw>>()
     .AddScoped<IGiftService, GiftService>()
+    .AddScoped<IDrawService, DrawService>()
     .AddScoped<IPrizeDrawService, PrizeDrawService>();
 
 builder.Services.AddControllers()
