@@ -6,8 +6,8 @@ namespace ApiWorkshop.Application.Domain.Filters;
 
 public class EntrantFilter : FilterBase
 {
-    [FromQuery(Name = "mall_id")]
-    public Guid? MallId { get; set; }
+    [FromQuery(Name = "id")]
+    public Guid? Id { get; set; }
     [FromQuery(Name = "draw_id")]
     public Guid? DrawId { get; set; }
 }

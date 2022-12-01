@@ -24,7 +24,7 @@ public class EntrantService : IEntrantService
             Name = request.Name,
             Phone = request.Phone,
             DrawId = request.DrawId
-            
+
         };
 
         _entrantRepository.Insert(entrant);
@@ -76,6 +76,10 @@ public class EntrantService : IEntrantService
 
     private static IQueryable<Entrant> Filter(IQueryable<Entrant> entities, EntrantFilter filter, out int count, out int totalCount)
     {
+        if (filter.Id != null)
+            entities = entities.Where(p => p.Id == filter.Id);
+        if (filter.DrawId != null)
+            entities = entities.Where(p => p.DrawId == filter.DrawId);
         if (filter.Search != null)
             entities = entities.Where(p => p.Name != null && p.Name.ToLower().Contains(filter.Search!.ToLower().Trim()));
 

@@ -80,7 +80,7 @@ namespace ApiWorkshop.Application.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("DrawId")
+                    b.Property<Guid>("DrawId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -182,7 +182,9 @@ namespace ApiWorkshop.Application.Data.Migrations
                 {
                     b.HasOne("ApiWorkshop.Application.Domain.Entities.Draw", "Draw")
                         .WithMany("Entrants")
-                        .HasForeignKey("DrawId");
+                        .HasForeignKey("DrawId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Draw");
                 });
