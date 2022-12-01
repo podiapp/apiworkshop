@@ -16,4 +16,5 @@ public class Entrant : BaseEntity
     public string? Phone { get; set; }
 
     public virtual Draw? Draw { get; set; }
+    public Guid DrawId { get; set; }
 }
