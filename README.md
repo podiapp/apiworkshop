@@ -12,3 +12,7 @@ To update the database:
 cd src/ApiWorkshop.Application
 dotnet ef database update
 ```
+To publish into aws lambda:
+```
+dotnet lambda deploy-function
+```
