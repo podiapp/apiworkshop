@@ -1,29 +1,21 @@
 ﻿namespace ApiWorkshop.Application.Domain.Responses;
 
-public class DrawResponse : PrizeDrawDataResponse
+public class DrawResponse
 {
-    public DrawResponse(Guid id,
-                        string name,
-                        string? gift,
-                        Guid? giftId,
-                        DateTime createdAt,
-                        string? giftPhoto,
-                        string? mallName,
-                        DateTime expireAt,
-                        string code) : base(id,
-                                                   name,
-                                                   gift,
-                                                   giftId,
-                                                   createdAt)
+    public DrawResponse(Guid? id, string? prizeName, string? prizePhoto, string? prizeDescription, DateTime? drawDate, Guid? mallId)
     {
-        GiftPhoto = giftPhoto;
-        MallName = mallName;
-        ExpireAt = expireAt;
-        Code = code;
+        Id = id;
+        PrizeName = prizeName;
+        PrizePhoto = prizePhoto;
+        PrizeDescription = prizeDescription;
+        DrawDate = drawDate;
+        MallId = mallId;
     }
 
-    public string? GiftPhoto { get; }
-    public string? MallName { get; }
-    public DateTime ExpireAt { get; }
-    public string Code { get; }
+    public Guid? Id { get; set; }
+    public string? PrizeName { get; set; } = string.Empty;
+    public string? PrizePhoto { get; set; } = string.Empty;
+    public string? PrizeDescription { get; set; } = string.Empty;
+    public DateTime? DrawDate { get; set; }
+    public Guid? MallId { get; set; }
 }

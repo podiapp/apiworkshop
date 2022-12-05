@@ -8,6 +8,8 @@ public class ApplicationContext : DbContext
 {
     public DbSet<Gift>? Gifts { get; set; }
     public DbSet<PrizeDraw>? PrizeDraws { get; set; }
+    public DbSet<Draw>? Draws { get; set; }
+    public DbSet<Entrant>? Entrants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,6 +17,8 @@ public class ApplicationContext : DbContext
         modelBuilder.HasDefaultSchema("workshop");
         modelBuilder.Entity<Gift>(new GiftMap().Configure);
         modelBuilder.Entity<PrizeDraw>(new PrizeDrawMap().Configure);
+        modelBuilder.Entity<Draw>(new DrawMap().Configure);
+        modelBuilder.Entity<Entrant>(new EntrantMap().Configure);
     }
     public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
